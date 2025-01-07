@@ -141,14 +141,22 @@ const ButtonSettings = () => {
 
 const SidebarTool = () => {
     const mounted = 0; // useMounted();
-
+    const { sidebar } = UIState.useContainer();
+    const { isPinned, togglePin } = sidebar;
+    
     return (
         <aside className="h-full flex flex-col w-12  md:w-11 flex-none bg-gray-200">
             <ButtonSearch />
             <ButtonTrash />
             <ButtonDailyNotes />
-
             <div className="tool mt-auto">
+                <button
+                    onClick={() => togglePin()}
+                    className="bg-gray-200 rounded px-2 py-1"
+                >
+                    {isPinned ? 'Unpin' : 'Pin'}
+                </button>
+                
                 {mounted ? (
                     <HeadwayWidget account="J031Z7" badgePosition="center">
                         <div className="mx-3 w-5 h-5"></div>
