@@ -1,5 +1,5 @@
 import NoteTreeState from 'libs/web/state/tree';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import NoteState from 'libs/web/state/note';
 import { useResizeDetector } from 'react-resize-detector';
 import Sidebar from 'components/sidebar/sidebar';
