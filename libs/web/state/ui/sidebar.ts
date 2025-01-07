@@ -4,6 +4,8 @@ import { useState, useCallback } from 'react';
 
 export default function useSidebar(initState = false, isMobileOnly = false) {
     const [isFold, setIsFold] = useState(initState);
+    const [isHovered, setIsHovered] = useState(false);
+    const [isPinned, setIsPinned] = useState(false);
     const { mutate } = useSettingsAPI();
 
     const toggle = useCallback(
@@ -33,5 +35,37 @@ export default function useSidebar(initState = false, isMobileOnly = false) {
             ?.catch((v) => console.error('Error whilst closing sidebar: %O', v));
     }, [toggle]);
 
-    return { isFold, toggle, open, close };
+    const handleMouseEnter = useCallback(() => {
+        if (!isPinned) {
+            setIsHovered(true);
+        }
+    }, [isPinned]);
+
+    const handleMouseLeave = useCallback(() => {
+        if (!isPinned) {
+            setIsHovered(false);
+        }
+    }, [isPinned]);
+
+    const togglePin = useCallback(() => {
+        setIsPinned((prev) => {
+            const newPinned = !prev;
+            if (!newPinned) {
+                setIsHovered(false);
+            }
+            return newPinned;
+        });
+    }, []);
+    
+    return {
+        isFold,
+        isHovered,
+        isPinned,
+        toggle,
+        open,
+        close,
+        handleMouseEnter,
+        handleMouseLeave,
+        togglePin,
+    };
 }
