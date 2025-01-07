@@ -15,18 +15,28 @@ const Sidebar: FC = () => {
     return ua?.isMobileOnly ? <MobileSidebar /> : <BrowserSidebar />;
 };
 
-const BrowserSidebar: FC = () => {
+const BrowserSidebar: FC<{ onHoverChange?: (hovered: boolean) => void }> = ({ onHoverChange }) => {
     const {
+        sidebar,
         split: { sizes },
     } = UIState.useContainer();
     const [isHovered, setIsHovered] = useState(false);
 
+    const handleMouseEnter = () => {
+        setIsHovered(true);
+        onHoverChange?.(true);
+    };
+
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+        onHoverChange?.(false);
+    };
+
     return (
         <>
-            {/* 创建一个极窄的触发区域 */}
             <div 
                 className="fixed left-0 top-0 w-1 h-full z-10"
-                onMouseEnter={() => setIsHovered(true)}
+                onMouseEnter={handleMouseEnter}
             />
             <section
                 className="flex h-full fixed left-0 transition-transform duration-300 ease-in-out"
@@ -34,7 +44,7 @@ const BrowserSidebar: FC = () => {
                     width: `calc(${sizes[0]}% - 5px)`,
                     transform: !isHovered ? 'translateX(-100%)' : 'translateX(0)',
                 }}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseLeave={handleMouseLeave}
             >
                 <div className="flex h-full">
                     <SidebarTool />
