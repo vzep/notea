@@ -21,7 +21,7 @@ const Sidebar: FC<SidebarProps> = ({ onHoverChange }) => {
 
 const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
     const {
-        sidebar: { isFold, isHovered, setHovered },
+        sidebar: { isFold, isHovered, isPinned, setHovered, toggle },
         split: { sizes },
     } = UIState.useContainer();
 
@@ -35,11 +35,13 @@ const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
         onHoverChange?.(false);
     };
 
-    const handleClick = (e: React.MouseEvent) => {
+    const handleToggle = (e: React.MouseEvent) => {
         e.stopPropagation();
+        toggle();
     };
 
-    const triggerWidth = 8; // 增加触发区域宽度
+    const shouldShow = isHovered || isPinned || !isFold;
+    const triggerWidth = 8;
 
     return (
         <>
@@ -52,11 +54,11 @@ const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
                 className={`flex h-full fixed left-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 shadow-lg`}
                 style={{
                     width: `${sizes[0]}px`,
-                    transform: (!isHovered && isFold) ? 'translateX(-100%)' : 'translateX(0)',
+                    transform: shouldShow ? 'translateX(0)' : 'translateX(-100%)',
                     pointerEvents: 'auto',
                 }}
                 onMouseLeave={handleMouseLeave}
-                onClick={handleClick}
+                onClick={handleToggle}
             >
                 <div className="flex h-full">
                     <SidebarTool />
