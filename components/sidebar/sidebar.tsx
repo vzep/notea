@@ -17,7 +17,6 @@ const Sidebar: FC = () => {
 
 const BrowserSidebar: FC = () => {
     const {
-        sidebar,
         split: { sizes },
     } = UIState.useContainer();
     const [isHovered, setIsHovered] = useState(false);
