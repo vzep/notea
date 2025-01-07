@@ -2,11 +2,9 @@ import useSettingsAPI from 'libs/web/api/settings';
 import { isBoolean } from 'lodash';
 import { useState, useCallback } from 'react';
 
-
-export default function useSidebar(initState = false, isMobileOnly = false) {  // 默认为折叠状态
+export default function useSidebar(initState = false, isMobileOnly = false) {
     const [isFold, setIsFold] = useState(initState);
     const [isHovered, setIsHovered] = useState(false);
-    const [isPinned, setIsPinned] = useState(false); // 新增固定状态
     const { mutate } = useSettingsAPI();
 
     const toggle = useCallback(
@@ -20,26 +18,20 @@ export default function useSidebar(initState = false, isMobileOnly = false) {  /
                     });
                 }
                 
-                // 当折叠时，取消固定状态
-                if (nextIsFold) {
-                    setIsPinned(false);
-                }
-                
                 return nextIsFold;
             });
+            // 切换时清除悬停状态
+            setIsHovered(false);
         },
         [isMobileOnly, mutate]
     );
 
     const setHovered = useCallback((state: boolean) => {
-        if (!isPinned) { // 只在非固定状态下更新悬停状态
+        // 只在折叠状态下更新悬停状态
+        if (isFold) {
             setIsHovered(state);
         }
-    }, [isPinned]);
-
-    const togglePin = useCallback(() => {
-        setIsPinned(prev => !prev);
-    }, []);
+    }, [isFold]);
 
     const open = useCallback(() => {
         toggle(false)?.catch((v) => console.error('Error whilst opening sidebar: %O', v));
@@ -49,14 +41,5 @@ export default function useSidebar(initState = false, isMobileOnly = false) {  /
         toggle(true)?.catch((v) => console.error('Error whilst closing sidebar: %O', v));
     }, [toggle]);
 
-    return { 
-        isFold, 
-        isHovered, 
-        isPinned, 
-        setHovered, 
-        togglePin, 
-        toggle, 
-        open, 
-        close 
-    };
+    return { isFold, isHovered, setHovered, toggle, open, close };
 }
