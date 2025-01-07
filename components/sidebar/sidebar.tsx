@@ -1,7 +1,7 @@
 import SidebarTool from 'components/sidebar/sidebar-tool';
 import SideBarList from 'components/sidebar/sidebar-list';
 import UIState from 'libs/web/state/ui';
-import { FC, useEffect, useState } from 'react';
+import { FC, useEffect } from 'react';
 import NoteTreeState from 'libs/web/state/tree';
 
 interface SidebarProps {
@@ -21,44 +21,37 @@ const Sidebar: FC<SidebarProps> = ({ onHoverChange }) => {
 
 const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
     const {
-        sidebar: { isFold },
+        sidebar: { isFold, isHovered, setHovered },
         split: { sizes },
     } = UIState.useContainer();
-    const [isHovered, setIsHovered] = useState(false);
 
     const handleMouseEnter = () => {
-        if (isFold) {
-            setIsHovered(true);
-            onHoverChange?.(true);
-        }
+        setHovered(true);
+        onHoverChange?.(true);
     };
 
     const handleMouseLeave = () => {
-        if (isFold) {
-            setIsHovered(false);
-            onHoverChange?.(false);
-        }
+        setHovered(false);
+        onHoverChange?.(false);
     };
 
-    // 将点击事件绑定到整个侧边栏区域
     const handleClick = (e: React.MouseEvent) => {
-        // 阻止事件冒泡
         e.stopPropagation();
     };
 
+    const triggerWidth = 8; // 增加触发区域宽度
+
     return (
         <>
-            {/* 触发区只在折叠状态显示 */}
-            {isFold && (
-                <div 
-                    className="fixed left-0 top-0 w-1 h-full z-10"
-                    onMouseEnter={handleMouseEnter}
-                />
-            )}
+            <div 
+                className="fixed left-0 top-0 h-full z-10 bg-transparent"
+                style={{ width: `${triggerWidth}px` }}
+                onMouseEnter={handleMouseEnter}
+            />
             <section
-                className="flex h-full fixed left-0 transition-transform duration-300 ease-in-out"
+                className={`flex h-full fixed left-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 shadow-lg`}
                 style={{
-                    width: `calc(${sizes[0]}% - 5px)`,
+                    width: `${sizes[0]}px`,
                     transform: (!isHovered && isFold) ? 'translateX(-100%)' : 'translateX(0)',
                     pointerEvents: 'auto',
                 }}
