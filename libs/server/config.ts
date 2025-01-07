@@ -142,6 +142,7 @@ export function loadConfigAndListErrors(): {
 
     let auth: AuthConfiguration = { type: 'none' };
     if (!disablePassword) {
+        const envUsername = env.getEnvRaw('USERNAME', false);
         const envPassword = env.getEnvRaw('PASSWORD', false);
         if (baseConfig.auth === undefined) {
             if (envPassword === undefined) {
@@ -182,22 +183,22 @@ export function loadConfigAndListErrors(): {
             } else {
                 auth = {
                     type: 'basic',
+                    username: envUsername?.toString(),
                     password: envPassword.toString(),
                 };
             }
         } else {
             auth = baseConfig.auth;
-            if (envPassword !== undefined) {
+            if (envPassword !== undefined || envUsername !== undefined) {
                 errors.push({
                     name: ErrTitle.INVALID_AUTH_CONFIG,
                     description:
-                        'The PASSWORD environment variable cannot be set when the file configuration contains an auth section.',
+                        'The PASSWORD or USERNAME environment variables cannot be set when the file configuration contains an auth section.',
                     category: IssueCategory.CONFIG,
                     severity: IssueSeverity.FATAL_ERROR,
                     fixes: [
                         {
-                            description:
-                                "Don't set the PASSWORD environment variable prior to running Notea.",
+                            description: "Don't set the PASSWORD or USERNAME environment variables prior to running Notea.",
                             recommendation: IssueFixRecommendation.RECOMMENDED,
                         },
                         {
