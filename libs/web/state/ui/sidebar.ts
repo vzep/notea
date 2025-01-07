@@ -2,7 +2,7 @@ import useSettingsAPI from 'libs/web/api/settings';
 import { isBoolean } from 'lodash';
 import { useState, useCallback } from 'react';
 
-export default function useSidebar(initState = true, isMobileOnly = false) {
+export default function useSidebar(initState = true, isMobileOnly = false) {  // 默认设置为折叠状态
     const [isFold, setIsFold] = useState(initState);
     const { mutate } = useSettingsAPI();
 
@@ -24,13 +24,11 @@ export default function useSidebar(initState = true, isMobileOnly = false) {
     );
 
     const open = useCallback(() => {
-        toggle(true)
-            ?.catch((v) => console.error('Error whilst opening sidebar: %O', v));
+        toggle(false)?.catch((v) => console.error('Error whilst opening sidebar: %O', v));
     }, [toggle]);
 
     const close = useCallback(() => {
-        toggle(false)
-            ?.catch((v) => console.error('Error whilst closing sidebar: %O', v));
+        toggle(true)?.catch((v) => console.error('Error whilst closing sidebar: %O', v));
     }, [toggle]);
 
     return { isFold, toggle, open, close };
