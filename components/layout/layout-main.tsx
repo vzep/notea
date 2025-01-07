@@ -1,5 +1,5 @@
 import NoteTreeState from 'libs/web/state/tree';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useState } from 'react';
 import NoteState from 'libs/web/state/note';
 import { useResizeDetector } from 'react-resize-detector';
 import Sidebar from 'components/sidebar/sidebar';
@@ -26,17 +26,24 @@ const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     const { ref, width = 0 } = useResizeDetector<HTMLDivElement>({
         handleHeight: false,
     });
+    const [isHovered, setIsHovered] = useState(false);
+
+    // 监听 Sidebar 组件的悬停状态
+    const handleSidebarHover = (hovered: boolean) => {
+        setIsHovered(hovered);
+    };
 
     return (
         <div className="h-full" ref={ref}>
-            <Resizable width={width}>
-                <Sidebar />
-                <main className="relative">{children}</main>
+            <Resizable width={width} initialSizes={isHovered ? [20, 80] : [0, 100]}>
+                <Sidebar onHoverChange={handleSidebarHover} />
+                <main className="relative w-full">{children}</main>
             </Resizable>
             <style jsx global>
                 {`
                     .gutter {
                         pointer-events: ${isFold ? 'none' : 'auto'};
+                        display: ${isHovered ? 'block' : 'none'};
                     }
                 `}
             </style>
