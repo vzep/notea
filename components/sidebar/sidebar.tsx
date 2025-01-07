@@ -1,4 +1,4 @@
-// import SidebarTool from 'components/sidebar/sidebar-tool';
+import SidebarTool from 'components/sidebar/sidebar-tool';
 import SideBarList from 'components/sidebar/sidebar-list';
 import UIState from 'libs/web/state/ui';
 import { FC, useEffect } from 'react';
@@ -29,7 +29,7 @@ const BrowserSidebar: FC = () => {
                 width: `calc(${sizes[0]}% - 5px)`,
             }}
         >
-{/*             <SidebarTool /> */}
+            <SidebarTool />
             {sidebar.isFold ? null : <SideBarList />}
         </section>
     );
@@ -38,7 +38,7 @@ const BrowserSidebar: FC = () => {
 const MobileSidebar: FC = () => {
     return (
         <section className="flex h-full" style={{ width: '80vw' }}>
-{/*             <SidebarTool /> */}
+            <SidebarTool />
             <SideBarList />
         </section>
     );
