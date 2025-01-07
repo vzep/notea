@@ -1,5 +1,10 @@
 # DEPRECATED, READ BELOW
 
+* 变动
+* csrf md5 -> sha256
+* session md5 -> sha256
+* upload filename md5 -> sha1
+
 To put it simply, this project is barely maintained anymore. I don't have time to work on Notea, and I've personally stopped using it too.
 
 Not to fret, however! There are several good alternatives available:
