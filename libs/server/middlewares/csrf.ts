@@ -1,14 +1,22 @@
 import Tokens from 'csrf';
 import { CSRF_HEADER_KEY } from 'libs/shared/const';
-import md5 from 'md5';
+import { createHash } from 'crypto';
 import { ApiNext, ApiRequest, ApiResponse, SSRMiddleware } from '../connect';
 import { BasicAuthConfiguration, config } from 'libs/server/config';
 
 const tokens = new Tokens();
 
+const generateHash = (input: string): string => {
+    return createHash('sha256')
+        .update(input)
+        .digest('hex');
+};
+
 // generate CSRF secret
 let _csrfSecret: string;
-const csrfSecret = () => _csrfSecret ?? (_csrfSecret = md5('CSRFs' + (config().auth as BasicAuthConfiguration).username + (config().auth as BasicAuthConfiguration).password));
+const csrfSecret = () => _csrfSecret ?? (_csrfSecret = generateHash('CSRFs' + 
+    (config().auth as BasicAuthConfiguration).username + 
+    (config().auth as BasicAuthConfiguration).password));
 
 export const getCsrfToken = () => tokens.create(csrfSecret());
 
