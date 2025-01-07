@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import PortalState from 'libs/web/state/portal';
 import useI18n from 'libs/web/hooks/use-i18n';
 import HeadwayWidget from '@notea/headway-widget';
-// import useMounted from 'libs/web/hooks/use-mounted';
+import useMounted from 'libs/web/hooks/use-mounted';
 import { useRouter } from 'next/router';
 
 const ButtonItem = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
@@ -140,23 +140,15 @@ const ButtonSettings = () => {
 };
 
 const SidebarTool = () => {
-    const mounted = 0; // useMounted();
-    const { sidebar } = UIState.useContainer();
-    const { isPinned, togglePin } = sidebar;
-    
+    const mounted = useMounted();
+
     return (
         <aside className="h-full flex flex-col w-12  md:w-11 flex-none bg-gray-200">
             <ButtonSearch />
             <ButtonTrash />
             <ButtonDailyNotes />
+
             <div className="tool mt-auto">
-                <button
-                    onClick={() => togglePin()}
-                    className="bg-gray-200 rounded px-2 py-1"
-                >
-                    {isPinned ? 'Unpin' : 'Pin'}
-                </button>
-                
                 {mounted ? (
                     <HeadwayWidget account="J031Z7" badgePosition="center">
                         <div className="mx-3 w-5 h-5"></div>
