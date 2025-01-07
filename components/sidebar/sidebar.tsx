@@ -22,18 +22,31 @@ const BrowserSidebar: FC = () => {
     } = UIState.useContainer();
     const [isHovered, setIsHovered] = useState(false);
 
+    const sidebarWidth = `calc(${sizes[0]}% - 5px)`;
+    const toolbarWidth = '40px';  // SidebarTool 的宽度
+
     return (
         <section
-            className="flex h-full fixed left-0 transition-all duration-300"
+            className="flex h-full fixed left-0 transition-transform duration-300 ease-in-out"
             style={{
-                width: `calc(${sizes[0]}% - 5px)`,
-                transform: `translateX(${!isHovered && sidebar.isFold ? 'calc(-100% + 40px)' : '0'})`,
+                width: sidebarWidth,
+                transform: (!isHovered && sidebar.isFold) ? `translateX(calc(-${sidebarWidth} + ${toolbarWidth}))` : 'translateX(0)',
             }}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
         >
-            <SidebarTool />
-            <SideBarList />
+            <div className="flex h-full">
+                <SidebarTool />
+                <div 
+                    className="transition-opacity duration-300"
+                    style={{
+                        opacity: (!isHovered && sidebar.isFold) ? 0 : 1,
+                        visibility: (!isHovered && sidebar.isFold) ? 'hidden' : 'visible',
+                    }}
+                >
+                    <SideBarList />
+                </div>
+            </div>
             <style jsx>{`
                 section {
                     will-change: transform;
