@@ -17,7 +17,6 @@ const Sidebar: FC = () => {
 
 const BrowserSidebar: FC<{ onHoverChange?: (hovered: boolean) => void }> = ({ onHoverChange }) => {
     const {
-        sidebar,
         split: { sizes },
     } = UIState.useContainer();
     const [isHovered, setIsHovered] = useState(false);
