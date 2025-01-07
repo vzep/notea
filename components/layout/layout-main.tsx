@@ -30,7 +30,7 @@ const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     return (
         <div className="h-full" ref={ref}>
             <Resizable width={width}>
-                <Sidebar onHoverChange={setIsHovered} />
+                <Sidebar />
                 <main className="relative w-full">
                     {children}
                 </main>
