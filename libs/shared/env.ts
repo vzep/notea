@@ -1,4 +1,5 @@
 type AllowedEnvs =
+    | 'USERNAME'
     | 'PASSWORD'
     | 'STORE_ACCESS_KEY'
     | 'STORE_SECRET_KEY'
