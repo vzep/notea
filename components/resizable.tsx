@@ -23,12 +23,9 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     const {
         split: { saveSizes, resize, sizes },
         ua: { isMobileOnly },
-        sidebar: { isFold, isHovered },
+        sidebar: { isFold },
     } = UIState.useContainer();
     const lastWidthRef = useRef(width);
-
-    const defaultSizes: [number, number] = [20, 80];
-    const shouldShowSidebar = isHovered || !isFold;
 
     useEffect(() => {
         const lastWidth = lastWidthRef.current;
@@ -41,39 +38,33 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     }, [resize, width]);
 
     useEffect(() => {
-        // 确保在侧边栏收起时编辑区域立即全屏
-        if (!shouldShowSidebar) {
-            splitRef.current?.split?.setSizes([0, 100]);
-        } else {
-            splitRef.current?.split?.setSizes(sizes || defaultSizes);
+        if (isFold) {
+            splitRef.current?.split?.collapse(0);
         }
-    }, [shouldShowSidebar, sizes]);
+        // width 改变引起 sizes 重置
+    }, [isFold, sizes]);
 
     const updateSplitSizes = useCallback(
-        async (newSizes: [number, number]) => {
+        async (sizes: [number, number]) => {
             if (isMobileOnly) {
                 return;
             }
-            
-            if (shouldShowSidebar) {
-                await saveSizes(newSizes);
-            }
+
+            await saveSizes(sizes);
         },
-        [saveSizes, isMobileOnly, shouldShowSidebar]
+        [saveSizes, isMobileOnly]
     );
 
     return (
         <Split
             ref={splitRef}
-            className="flex h-auto"
-            minSize={[48, 200]}
-            maxSize={[600, Infinity]}
-            sizes={shouldShowSidebar ? (sizes || defaultSizes) : [0, 100]}
-            gutterSize={5}
+            className="flex h-auto justify-end"
+            // w-12
+            minSize={isFold ? 48 : 250}
+            sizes={sizes}
+            gutterSize={0}
             gutter={renderGutter}
             onDragEnd={updateSplitSizes}
-            snapOffset={0}
-            style={{ transition: 'all 0.3s ease-in-out' }}
         >
             {children}
         </Split>
