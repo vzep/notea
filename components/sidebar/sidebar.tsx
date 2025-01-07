@@ -18,41 +18,20 @@ const Sidebar: FC = () => {
 
 const BrowserSidebar: FC = () => {
     const {
-        sidebar: { isHovered, isPinned, handleMouseEnter, handleMouseLeave, togglePin },
+        sidebar,
         split: { sizes },
     } = UIState.useContainer();
 
     return (
-        <>
-            {/* 悬浮触发区域 */}
-            <div
-                className="fixed left-0 top-0 w-2 h-full z-10"
-                onMouseEnter={handleMouseEnter}
-            />
-            
-            {/* 主侧边栏 */}
-            <section
-                className={`flex h-full fixed left-0 transition-transform duration-300 ${
-                    !isPinned && !isHovered ? '-translate-x-full' : 'translate-x-0'
-                }`}
-                style={{
-                    width: `calc(${sizes[0]}% - 5px)`,
-                }}
-                onMouseLeave={handleMouseLeave}
-            >
-                <SidebarTool />
-                <div className="relative w-full">
-                    <button
-                        className="absolute right-2 top-2 p-2 rounded hover:bg-gray-200"
-                        onClick={togglePin}
-                    >
-                        {/* 使用你项目中已有的图标系统 */}
-                        {isPinned ? "取消固定" : "固定"}
-                    </button>
-                    <SideBarList />
-                </div>
-            </section>
-        </>
+        <section
+            className="flex h-full fixed left-0"
+            style={{
+                width: `calc(${sizes[0]}% - 5px)`,
+            }}
+        >
+            <SidebarTool />
+            {sidebar.isFold ? null : <SideBarList />}
+        </section>
     );
 };
 
