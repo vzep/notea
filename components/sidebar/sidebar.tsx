@@ -1,7 +1,7 @@
 import SidebarTool from 'components/sidebar/sidebar-tool';
 import SideBarList from 'components/sidebar/sidebar-list';
 import UIState from 'libs/web/state/ui';
-import { FC, useEffect } from 'react';
+import { FC, useEffect, useCallback } from 'react';
 import NoteTreeState from 'libs/web/state/tree';
 
 interface SidebarProps {
@@ -21,46 +21,48 @@ const Sidebar: FC<SidebarProps> = ({ onHoverChange }) => {
 
 const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
     const {
-        sidebar: { isFold, isHovered, isPinned, setHovered, toggle },
+        sidebar: { isFold, isHovered, setHovered, toggle },
         split: { sizes },
     } = UIState.useContainer();
 
-    const handleMouseEnter = () => {
+    const handleMouseEnter = useCallback(() => {
         setHovered(true);
         onHoverChange?.(true);
-    };
+    }, [setHovered, onHoverChange]);
 
-    const handleMouseLeave = () => {
+    const handleMouseLeave = useCallback(() => {
         setHovered(false);
         onHoverChange?.(false);
-    };
+    }, [setHovered, onHoverChange]);
 
-    const handleToggle = (e: React.MouseEvent) => {
+    const handleClick = useCallback((e: React.MouseEvent) => {
         e.stopPropagation();
         toggle();
-    };
+    }, [toggle]);
 
-    const shouldShow = isHovered || isPinned || !isFold;
-    const triggerWidth = 8;
+    const shouldShow = isHovered || !isFold;
 
     return (
         <>
-            <div 
-                className="fixed left-0 top-0 h-full z-10 bg-transparent"
-                style={{ width: `${triggerWidth}px` }}
-                onMouseEnter={handleMouseEnter}
-            />
+            {/* 触发区只在折叠状态显示 */}
+            {isFold && (
+                <div 
+                    className="fixed left-0 top-0 h-full z-10 bg-transparent"
+                    style={{ width: '8px' }}
+                    onMouseEnter={handleMouseEnter}
+                />
+            )}
             <section
-                className={`flex h-full fixed left-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 shadow-lg`}
+                className="flex h-full fixed left-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 shadow-lg"
                 style={{
                     width: `${sizes[0]}px`,
                     transform: shouldShow ? 'translateX(0)' : 'translateX(-100%)',
                     pointerEvents: 'auto',
+                    zIndex: 20
                 }}
                 onMouseLeave={handleMouseLeave}
-                onClick={handleToggle}
             >
-                <div className="flex h-full">
+                <div className="flex h-full" onClick={handleClick}>
                     <SidebarTool />
                     <SideBarList />
                 </div>
