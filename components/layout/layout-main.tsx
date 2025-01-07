@@ -21,24 +21,24 @@ import EditorWidthSelect from 'components/portal/editor-width-select';
 
 const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     const {
-        sidebar: { isFold },
+        sidebar: { isFold, isHovered },
     } = UIState.useContainer();
     const { ref, width = 0 } = useResizeDetector<HTMLDivElement>({
         handleHeight: false,
     });
-    const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <div className="h-full" ref={ref} onClick={() => setIsHovered(false)}>
+        <div className="h-full" ref={ref}>
             <Resizable width={width}>
                 <Sidebar onHoverChange={setIsHovered} />
-                <main className="relative w-full">{children}</main>
+                <main className="relative w-full">
+                    {children}
+                </main>
             </Resizable>
             <style jsx global>
                 {`
                     .gutter {
-                        pointer-events: ${isFold ? 'none' : 'auto'};
-                        display: ${isHovered ? 'block' : 'none'};
+                        pointer-events: ${isFold && !isHovered ? 'none' : 'auto'};
                     }
                 `}
             </style>
