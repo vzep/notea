@@ -22,6 +22,7 @@ const LoginPage = () => {
                     method: 'POST',
                 },
                 {
+                    username: e.currentTarget.username.value,
                     password: e.currentTarget.password.value,
                 }
             );
@@ -49,6 +50,16 @@ const LoginPage = () => {
                     onSubmit={onSubmit}
                 >
                     <div className="flex flex-col space-y-2 my-8">
+                        <TextField
+                            variant="outlined"
+                            required
+                            fullWidth
+                            name="username"
+                            label="Username"
+                            type="text"
+                            id="username"
+                            autoComplete="username"
+                        />
                         <TextField
                             variant="outlined"
                             required
