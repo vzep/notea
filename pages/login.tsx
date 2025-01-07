@@ -14,7 +14,7 @@ const LoginPage = () => {
         async (e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
             const data = await request<
-                { password: string },
+                { username: string; password: string },
                 { isLoggedIn: boolean }
             >(
                 {
@@ -35,7 +35,7 @@ const LoginPage = () => {
 
     useEffect(() => {
         if (!loading && !!error) {
-            toast('Incorrect password', 'error');
+            toast('Incorrect username or password', 'error');
         }
     }, [loading, error, toast]);
 
