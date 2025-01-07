@@ -23,11 +23,12 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     const {
         split: { saveSizes, resize, sizes },
         ua: { isMobileOnly },
-        sidebar: { isFold, isHovered },
+        sidebar: { isFold, isHovered, isPinned },
     } = UIState.useContainer();
     const lastWidthRef = useRef(width);
 
     const defaultSizes: [number, number] = [20, 80];
+    const shouldShowSidebar = isHovered || isPinned || !isFold;
 
     useEffect(() => {
         const lastWidth = lastWidthRef.current;
@@ -40,12 +41,12 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     }, [resize, width]);
 
     useEffect(() => {
-        if (isFold && !isHovered) {
+        if (!shouldShowSidebar) {
             splitRef.current?.split?.setSizes([0, 100]);
         } else {
             splitRef.current?.split?.setSizes(sizes || defaultSizes);
         }
-    }, [isFold, isHovered, sizes]);
+    }, [shouldShowSidebar, sizes]);
 
     const updateSplitSizes = useCallback(
         async (newSizes: [number, number]) => {
@@ -53,11 +54,11 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
                 return;
             }
             
-            if (!isFold || isHovered) {
+            if (shouldShowSidebar) {
                 await saveSizes(newSizes);
             }
         },
-        [saveSizes, isMobileOnly, isFold, isHovered]
+        [saveSizes, isMobileOnly, shouldShowSidebar]
     );
 
     return (
@@ -66,7 +67,7 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
             className="flex h-auto justify-end"
             minSize={[48, 200]}
             maxSize={[600, Infinity]}
-            sizes={isFold && !isHovered ? [0, 100] : (sizes || defaultSizes)}
+            sizes={shouldShowSidebar ? (sizes || defaultSizes) : [0, 100]}
             gutterSize={5}
             gutter={renderGutter}
             onDragEnd={updateSplitSizes}
