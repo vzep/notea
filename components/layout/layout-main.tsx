@@ -16,9 +16,8 @@ import SidebarMenu from 'components/portal/sidebar-menu/sidebar-menu';
 import { NoteModel } from 'libs/shared/note';
 import PreviewModal from 'components/portal/preview-modal';
 import LinkToolbar from 'components/portal/link-toolbar/link-toolbar';
-import { ReactNodeLike } from 'prop-types';
 import EditorWidthSelect from 'components/portal/editor-width-select';
-
+import { ReactNodeLike } from 'prop-types';
 
 const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     const {
