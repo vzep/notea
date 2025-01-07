@@ -21,7 +21,6 @@ const Sidebar: FC<SidebarProps> = ({ onHoverChange }) => {
 
 const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
     const {
-        sidebar,
         split: { sizes },
     } = UIState.useContainer();
     const [isHovered, setIsHovered] = useState(false);
