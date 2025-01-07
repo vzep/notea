@@ -8,7 +8,7 @@ const tokens = new Tokens();
 
 // generate CSRF secret
 let _csrfSecret: string;
-const csrfSecret = () => _csrfSecret ?? (_csrfSecret = md5('CSRF' + (config().auth as BasicAuthConfiguration).password));
+const csrfSecret = () => _csrfSecret ?? (_csrfSecret = md5('CSRFs' + (config().auth as BasicAuthConfiguration).username + (config().auth as BasicAuthConfiguration).password));
 
 export const getCsrfToken = () => tokens.create(csrfSecret());
 
