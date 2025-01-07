@@ -14,7 +14,7 @@ import dayjs from 'dayjs';
 import PortalState from 'libs/web/state/portal';
 import useI18n from 'libs/web/hooks/use-i18n';
 import HeadwayWidget from '@notea/headway-widget';
-import useMounted from 'libs/web/hooks/use-mounted';
+// import useMounted from 'libs/web/hooks/use-mounted';
 import { useRouter } from 'next/router';
 
 const ButtonItem = forwardRef<HTMLDivElement, HTMLProps<HTMLDivElement>>(
@@ -140,7 +140,7 @@ const ButtonSettings = () => {
 };
 
 const SidebarTool = () => {
-    const mounted = useMounted();
+    const mounted =  0; // useMounted();
 
     return (
         <aside className="h-full flex flex-col w-12  md:w-11 flex-none bg-gray-200">
