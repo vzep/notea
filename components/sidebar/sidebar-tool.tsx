@@ -140,7 +140,7 @@ const ButtonSettings = () => {
 };
 
 const SidebarTool = () => {
-    const mounted =  0; // useMounted();
+    const mounted = 0; // useMounted();
 
     return (
         <aside className="h-full flex flex-col w-12  md:w-11 flex-none bg-gray-200">
