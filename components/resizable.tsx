@@ -27,6 +27,9 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     } = UIState.useContainer();
     const lastWidthRef = useRef(width);
 
+    // 设置默认尺寸
+    const defaultSizes: [number, number] = [20, 80];
+
     useEffect(() => {
         const lastWidth = lastWidthRef.current;
 
@@ -37,13 +40,12 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
         lastWidthRef.current = width;
     }, [resize, width]);
 
-    // 处理折叠状态
     useEffect(() => {
         if (isFold) {
             splitRef.current?.split?.collapse(0);
         } else {
-            // 恢复到上一次保存的尺寸
-            splitRef.current?.split?.setSizes(sizes);
+            // 恢复到上一次保存的尺寸或默认尺寸
+            splitRef.current?.split?.setSizes(sizes || defaultSizes);
         }
     }, [isFold, sizes]);
 
@@ -53,7 +55,6 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
                 return;
             }
             
-            // 只有在非折叠状态下才保存尺寸
             if (!isFold) {
                 await saveSizes(newSizes);
             }
@@ -65,9 +66,9 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
         <Split
             ref={splitRef}
             className="flex h-auto justify-end"
-            minSize={[48, 200]} // 设置最小尺寸
-            maxSize={[600, Infinity]} // 设置最大尺寸
-            sizes={isFold ? [0, 100] : sizes} // 根据折叠状态动态设置尺寸
+            minSize={[48, 200]}
+            maxSize={[600, Infinity]}
+            sizes={isFold ? [0, 100] : (sizes || defaultSizes)}
             gutterSize={5}
             gutter={renderGutter}
             onDragEnd={updateSplitSizes}
