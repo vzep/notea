@@ -23,12 +23,12 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     const {
         split: { saveSizes, resize, sizes },
         ua: { isMobileOnly },
-        sidebar: { isFold, isHovered, isPinned },
+        sidebar: { isFold, isHovered },
     } = UIState.useContainer();
     const lastWidthRef = useRef(width);
 
     const defaultSizes: [number, number] = [20, 80];
-    const shouldShowSidebar = isHovered || isPinned || !isFold;
+    const shouldShowSidebar = isHovered || !isFold;
 
     useEffect(() => {
         const lastWidth = lastWidthRef.current;
