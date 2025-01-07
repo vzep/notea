@@ -29,9 +29,9 @@ const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     const [isHovered, setIsHovered] = useState(false);
 
     return (
-        <div className="h-full" ref={ref}>
+        <div className="h-full" ref={ref} onClick={() => setIsHovered(false)}>
             <Resizable width={width}>
-                <Sidebar onHoverChange={(hovered) => setIsHovered(hovered)} />
+                <Sidebar onHoverChange={setIsHovered} />
                 <main className="relative w-full">{children}</main>
             </Resizable>
             <style jsx global>
