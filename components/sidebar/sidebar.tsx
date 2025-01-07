@@ -4,7 +4,11 @@ import UIState from 'libs/web/state/ui';
 import { FC, useEffect, useState } from 'react';
 import NoteTreeState from 'libs/web/state/tree';
 
-const Sidebar: FC = () => {
+interface SidebarProps {
+    onHoverChange?: (hovered: boolean) => void;
+}
+
+const Sidebar: FC<SidebarProps> = ({ onHoverChange }) => {
     const { ua } = UIState.useContainer();
     const { initTree } = NoteTreeState.useContainer();
 
@@ -12,11 +16,12 @@ const Sidebar: FC = () => {
         initTree()?.catch((v) => console.error('Error whilst initialising tree: %O', v));
     }, [initTree]);
 
-    return ua?.isMobileOnly ? <MobileSidebar /> : <BrowserSidebar />;
+    return ua?.isMobileOnly ? <MobileSidebar /> : <BrowserSidebar onHoverChange={onHoverChange} />;
 };
 
-const BrowserSidebar: FC<{ onHoverChange?: (hovered: boolean) => void }> = ({ onHoverChange }) => {
+const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
     const {
+        sidebar,
         split: { sizes },
     } = UIState.useContainer();
     const [isHovered, setIsHovered] = useState(false);
