@@ -28,15 +28,10 @@ const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     });
     const [isHovered, setIsHovered] = useState(false);
 
-    // 监听 Sidebar 组件的悬停状态
-    const handleSidebarHover = (hovered: boolean) => {
-        setIsHovered(hovered);
-    };
-
     return (
         <div className="h-full" ref={ref}>
-            <Resizable width={width} initialSizes={isHovered ? [20, 80] : [0, 100]}>
-                <Sidebar onHoverChange={handleSidebarHover} />
+            <Resizable width={width}>
+                <Sidebar onHoverChange={(hovered) => setIsHovered(hovered)} />
                 <main className="relative w-full">{children}</main>
             </Resizable>
             <style jsx global>
