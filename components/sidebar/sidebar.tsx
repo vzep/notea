@@ -1,86 +1,63 @@
 import SidebarTool from 'components/sidebar/sidebar-tool';
 import SideBarList from 'components/sidebar/sidebar-list';
 import UIState from 'libs/web/state/ui';
-import { FC, useEffect, useCallback, useRef } from 'react';
+import { FC, useEffect, useState } from 'react';
 import NoteTreeState from 'libs/web/state/tree';
 
-interface SidebarProps {
-    onHoverChange?: (hovered: boolean) => void;
-}
-
-const Sidebar: FC<SidebarProps> = ({ onHoverChange }) => {
+const Sidebar: FC = () => {
     const { ua } = UIState.useContainer();
     const { initTree } = NoteTreeState.useContainer();
 
     useEffect(() => {
-        initTree()?.catch((v) => console.error('Error whilst initialising tree: %O', v));
+        initTree()
+            ?.catch((v) => console.error('Error whilst initialising tree: %O', v));
     }, [initTree]);
 
-    return ua?.isMobileOnly ? <MobileSidebar /> : <BrowserSidebar onHoverChange={onHoverChange} />;
+    return ua?.isMobileOnly ? <MobileSidebar /> : <BrowserSidebar />;
 };
 
-const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
+const BrowserSidebar: FC = () => {
     const {
-        sidebar: { isFold, isHovered, setHovered, toggle },
+        sidebar,
         split: { sizes },
     } = UIState.useContainer();
-    const sidebarRef = useRef<HTMLDivElement>(null);
 
-    const handleMouseEnter = useCallback(() => {
-        setHovered(true);
-        onHoverChange?.(true);
-    }, [setHovered, onHoverChange]);
+    // 用于控制鼠标悬浮后自动展开
+    const [hovered, setHovered] = useState(false);
 
-    const handleMouseLeave = useCallback((e: React.MouseEvent) => {
-        // 检查鼠标是否真的离开了侧边栏区域
-        if (sidebarRef.current) {
-            const rect = sidebarRef.current.getBoundingClientRect();
-            const isOutside = 
-                e.clientX < rect.left ||
-                e.clientX > rect.right ||
-                e.clientY < rect.top ||
-                e.clientY > rect.bottom;
+    const handleMouseEnter = () => setHovered(true);
+    const handleMouseLeave = () => setHovered(false);
 
-            if (isOutside) {
-                setHovered(false);
-                onHoverChange?.(false);
-            }
-        }
-    }, [setHovered, onHoverChange]);
+    // 原有可拖拽设置里的“展开”宽度
+    const expandWidth = `calc(${sizes[0]}% - 5px)`;
+    // 折叠后的最小宽度（可根据实际需要微调，让唤醒区域别太窄）
+    const foldWidth = '48px';
 
-    const handleClick = useCallback((e: React.MouseEvent) => {
-        e.stopPropagation();
-        toggle();
-    }, [toggle]);
-
-    const shouldShow = isHovered || !isFold;
+    /**
+     * 如果用户“没有折叠” => 一直按展开宽度来
+     * 如果用户“折叠了”   => 悬浮时展开，否则显示最小宽度
+     */
+    const containerWidth = !sidebar.isFold
+        ? expandWidth
+        : hovered
+        ? expandWidth
+        : foldWidth;
 
     return (
-        <>
-            {isFold && (
-                <div 
-                    className="fixed left-0 top-0 h-full z-10 bg-transparent hover:bg-gray-100/10"
-                    style={{ width: '8px' }}
-                    onMouseEnter={handleMouseEnter}
-                />
-            )}
-            <section
-                ref={sidebarRef}
-                className="flex h-full fixed left-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 shadow-lg"
-                style={{
-                    width: `${sizes[0]}px`,
-                    transform: shouldShow ? 'translateX(0)' : 'translateX(-100%)',
-                    pointerEvents: 'auto',
-                    zIndex: 20
-                }}
-                onMouseLeave={handleMouseLeave}
-            >
-                <div className="flex h-full" onClick={handleClick}>
-                    <SidebarTool />
-                    <SideBarList />
-                </div>
-            </section>
-        </>
+        <section
+            className="flex h-full fixed left-0 transition-all duration-300 ease-in-out overflow-hidden"
+            style={{
+                width: containerWidth,
+            }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+        >
+            {/* SidebarTool 部分一直显示 */}
+            <SidebarTool />
+
+            {/** 当没有折叠 或 鼠标悬浮时，显示 SideBarList */}
+            {(!sidebar.isFold || hovered) && <SideBarList />}
+        </section>
     );
 };
 
