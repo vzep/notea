@@ -19,6 +19,7 @@ import LinkToolbar from 'components/portal/link-toolbar/link-toolbar';
 import { ReactNodeLike } from 'prop-types';
 import EditorWidthSelect from 'components/portal/editor-width-select';
 
+
 const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     const {
         sidebar: { isFold, isHovered },
