@@ -20,14 +20,12 @@ export default function useSidebar(initState = false, isMobileOnly = false) {
                 
                 return nextIsFold;
             });
-            // 切换时清除悬停状态
             setIsHovered(false);
         },
         [isMobileOnly, mutate]
     );
 
     const setHovered = useCallback((state: boolean) => {
-        // 只在折叠状态下更新悬停状态
         if (isFold) {
             setIsHovered(state);
         }
