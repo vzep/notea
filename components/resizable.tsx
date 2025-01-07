@@ -23,11 +23,10 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     const {
         split: { saveSizes, resize, sizes },
         ua: { isMobileOnly },
-        sidebar: { isFold },
+        sidebar: { isFold, isHovered },
     } = UIState.useContainer();
     const lastWidthRef = useRef(width);
 
-    // 设置默认尺寸
     const defaultSizes: [number, number] = [20, 80];
 
     useEffect(() => {
@@ -41,13 +40,12 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     }, [resize, width]);
 
     useEffect(() => {
-        if (isFold) {
-            splitRef.current?.split?.collapse(0);
+        if (isFold && !isHovered) {
+            splitRef.current?.split?.setSizes([0, 100]);
         } else {
-            // 恢复到上一次保存的尺寸或默认尺寸
             splitRef.current?.split?.setSizes(sizes || defaultSizes);
         }
-    }, [isFold, sizes]);
+    }, [isFold, isHovered, sizes]);
 
     const updateSplitSizes = useCallback(
         async (newSizes: [number, number]) => {
@@ -55,11 +53,11 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
                 return;
             }
             
-            if (!isFold) {
+            if (!isFold || isHovered) {
                 await saveSizes(newSizes);
             }
         },
-        [saveSizes, isMobileOnly, isFold]
+        [saveSizes, isMobileOnly, isFold, isHovered]
     );
 
     return (
@@ -68,14 +66,12 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
             className="flex h-auto justify-end"
             minSize={[48, 200]}
             maxSize={[600, Infinity]}
-            sizes={isFold ? [0, 100] : (sizes || defaultSizes)}
+            sizes={isFold && !isHovered ? [0, 100] : (sizes || defaultSizes)}
             gutterSize={5}
             gutter={renderGutter}
             onDragEnd={updateSplitSizes}
             snapOffset={0}
-            style={{
-                transition: 'all 0.3s ease-in-out',
-            }}
+            style={{ transition: 'all 0.3s ease-in-out' }}
         >
             {children}
         </Split>
