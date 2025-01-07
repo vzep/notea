@@ -1,7 +1,7 @@
 import SidebarTool from 'components/sidebar/sidebar-tool';
 import SideBarList from 'components/sidebar/sidebar-list';
 import UIState from 'libs/web/state/ui';
-import { FC, useEffect, useCallback } from 'react';
+import { FC, useEffect, useCallback, useRef } from 'react';
 import NoteTreeState from 'libs/web/state/tree';
 
 interface SidebarProps {
@@ -24,15 +24,28 @@ const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
         sidebar: { isFold, isHovered, setHovered, toggle },
         split: { sizes },
     } = UIState.useContainer();
+    const sidebarRef = useRef<HTMLDivElement>(null);
 
     const handleMouseEnter = useCallback(() => {
         setHovered(true);
         onHoverChange?.(true);
     }, [setHovered, onHoverChange]);
 
-    const handleMouseLeave = useCallback(() => {
-        setHovered(false);
-        onHoverChange?.(false);
+    const handleMouseLeave = useCallback((e: React.MouseEvent) => {
+        // 检查鼠标是否真的离开了侧边栏区域
+        if (sidebarRef.current) {
+            const rect = sidebarRef.current.getBoundingClientRect();
+            const isOutside = 
+                e.clientX < rect.left ||
+                e.clientX > rect.right ||
+                e.clientY < rect.top ||
+                e.clientY > rect.bottom;
+
+            if (isOutside) {
+                setHovered(false);
+                onHoverChange?.(false);
+            }
+        }
     }, [setHovered, onHoverChange]);
 
     const handleClick = useCallback((e: React.MouseEvent) => {
@@ -44,15 +57,15 @@ const BrowserSidebar: FC<SidebarProps> = ({ onHoverChange }) => {
 
     return (
         <>
-            {/* 触发区只在折叠状态显示 */}
             {isFold && (
                 <div 
-                    className="fixed left-0 top-0 h-full z-10 bg-transparent"
+                    className="fixed left-0 top-0 h-full z-10 bg-transparent hover:bg-gray-100/10"
                     style={{ width: '8px' }}
                     onMouseEnter={handleMouseEnter}
                 />
             )}
             <section
+                ref={sidebarRef}
                 className="flex h-full fixed left-0 transition-all duration-300 ease-in-out bg-white dark:bg-gray-900 shadow-lg"
                 style={{
                     width: `${sizes[0]}px`,
