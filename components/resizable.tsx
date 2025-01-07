@@ -41,6 +41,7 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     }, [resize, width]);
 
     useEffect(() => {
+        // 确保在侧边栏收起时编辑区域立即全屏
         if (!shouldShowSidebar) {
             splitRef.current?.split?.setSizes([0, 100]);
         } else {
@@ -64,7 +65,7 @@ const Resizable: FC<{ width: number; children: ReactNodeLike }> = ({
     return (
         <Split
             ref={splitRef}
-            className="flex h-auto justify-end"
+            className="flex h-auto"
             minSize={[48, 200]}
             maxSize={[600, Infinity]}
             sizes={shouldShowSidebar ? (sizes || defaultSizes) : [0, 100]}
