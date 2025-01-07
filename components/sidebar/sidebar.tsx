@@ -18,7 +18,6 @@ const Sidebar: FC = () => {
 
 const BrowserSidebar: FC = () => {
     const {
-        sidebar: { isFold, toggle },
         split: { sizes },
     } = UIState.useContainer();
     
