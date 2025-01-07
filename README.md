@@ -5,6 +5,12 @@
 * session md5 -> sha256
 * upload filename md5 -> sha1
 * components/editor/main-editor.tsx -> 关闭ctrl+s快捷键
+* TDOD 伸缩侧边栏
+* components/resizable.tsx
+* components/sidebar/sidebar.tsx
+* libs/web/state/ui/sidebar.ts
+* components/layout/layout-main.tsx
+* components/sidebar/sidebar-tool.tsx ？？？
 
 To put it simply, this project is barely maintained anymore. I don't have time to work on Notea, and I've personally stopped using it too.
 
