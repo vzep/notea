@@ -22,37 +22,27 @@ const BrowserSidebar: FC = () => {
     } = UIState.useContainer();
     const [isHovered, setIsHovered] = useState(false);
 
-    const sidebarWidth = `calc(${sizes[0]}% - 5px)`;
-    const toolbarWidth = '40px';  // SidebarTool 的宽度
-
     return (
-        <section
-            className="flex h-full fixed left-0 transition-transform duration-300 ease-in-out"
-            style={{
-                width: sidebarWidth,
-                transform: (!isHovered && sidebar.isFold) ? `translateX(calc(-${sidebarWidth} + ${toolbarWidth}))` : 'translateX(0)',
-            }}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-        >
-            <div className="flex h-full">
-                <SidebarTool />
-                <div 
-                    className="transition-opacity duration-300"
-                    style={{
-                        opacity: (!isHovered && sidebar.isFold) ? 0 : 1,
-                        visibility: (!isHovered && sidebar.isFold) ? 'hidden' : 'visible',
-                    }}
-                >
+        <>
+            {/* 创建一个极窄的触发区域 */}
+            <div 
+                className="fixed left-0 top-0 w-1 h-full z-10"
+                onMouseEnter={() => setIsHovered(true)}
+            />
+            <section
+                className="flex h-full fixed left-0 transition-transform duration-300 ease-in-out"
+                style={{
+                    width: `calc(${sizes[0]}% - 5px)`,
+                    transform: !isHovered ? 'translateX(-100%)' : 'translateX(0)',
+                }}
+                onMouseLeave={() => setIsHovered(false)}
+            >
+                <div className="flex h-full">
+                    <SidebarTool />
                     <SideBarList />
                 </div>
-            </div>
-            <style jsx>{`
-                section {
-                    will-change: transform;
-                }
-            `}</style>
-        </section>
+            </section>
+        </>
     );
 };
 
