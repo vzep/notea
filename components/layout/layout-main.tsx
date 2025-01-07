@@ -16,12 +16,12 @@ import SidebarMenu from 'components/portal/sidebar-menu/sidebar-menu';
 import { NoteModel } from 'libs/shared/note';
 import PreviewModal from 'components/portal/preview-modal';
 import LinkToolbar from 'components/portal/link-toolbar/link-toolbar';
-import EditorWidthSelect from 'components/portal/editor-width-select';
 import { ReactNodeLike } from 'prop-types';
+import EditorWidthSelect from 'components/portal/editor-width-select';
 
 const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
     const {
-        sidebar: { isFold, isHovered },
+        sidebar: { isFold },
     } = UIState.useContainer();
     const { ref, width = 0 } = useResizeDetector<HTMLDivElement>({
         handleHeight: false,
@@ -31,14 +31,12 @@ const MainWrapper: FC<{ children: ReactNodeLike }> = ({ children }) => {
         <div className="h-full" ref={ref}>
             <Resizable width={width}>
                 <Sidebar />
-                <main className="relative w-full">
-                    {children}
-                </main>
+                <main className="relative">{children}</main>
             </Resizable>
             <style jsx global>
                 {`
                     .gutter {
-                        pointer-events: ${isFold && !isHovered ? 'none' : 'auto'};
+                        pointer-events: ${isFold ? 'none' : 'auto'};
                     }
                 `}
             </style>
